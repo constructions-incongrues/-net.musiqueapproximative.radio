@@ -1,0 +1,5 @@
+suites:
+    constructions_incongrues:
+        namespace: ConstructionsIncongrues
+        src_path: src/src
+        spec_path: src
