@@ -1,2 +1,2 @@
-*.mp3
+/src/fixtures/*/real/*.mp3
 /vendor
