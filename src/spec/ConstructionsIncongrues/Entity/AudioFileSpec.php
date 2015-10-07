@@ -26,4 +26,8 @@ class AudioFileSpec extends ObjectBehavior
     {
         $this->getFile()->shouldReturnAnInstanceOf($file);
     }
+
+    function stats_can_be_reset()
+    {
+    }
 }

@@ -5,8 +5,12 @@ require_once(__DIR__.'/../vendor/autoload.php');
 // Use
 use ConstructionsIncongrues\Entity\AudioFile;
 use ConstructionsIncongrues\Entity\Playlist;
+use ConstructionsIncongrues\Filter\Silence;
+use ConstructionsIncongrues\Filter\Homogenize;
+use ConstructionsIncongrues\Filter\Combine;
 use Illuminate\Support\Collection;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Filesystem\Filesystem;
 
 // Helpers
 
@@ -43,6 +47,8 @@ function decorate(Collection $filesPaths)
     return $audioFiles;
 }
 
+$fs = new Filesystem();
+
 // Configuration
 $dirFixtures = __DIR__.'/../src/fixtures';
 $dirEnding = sprintf('%s/%s', $dirFixtures, 'ending/real');
@@ -51,41 +57,64 @@ $dirOpening = sprintf('%s/%s', $dirFixtures, 'opening/real');
 $dirTracks = sprintf('%s/%s', $dirFixtures, 'tracks/real');
 $dirVirgules = sprintf('%s/%s', $dirFixtures, 'virgules/dummy');
 $dirWorkingDirectories = sprintf('%s/%s', $dirFixtures, 'working_directories');
+$dirWorkingDirectory = sprintf('%s/%s', $dirWorkingDirectories, uniqid());
+var_dump($dirWorkingDirectory);
+$maxDuration = 600;
+$playlists = [];
 
-// 1 - Create playlist for starting and ending files
-$playlistStartEnd = new Playlist(
+// Create playlist for starting and ending files
+$playlists['startEnd'] = new Playlist(
     [decorate(getRandomFiles($dirOpening, '*.mp3', 1))[0], decorate(getRandomFiles($dirEnding, '*.mp3', 1))[0]]
 );
 
-// 2 - Create playlist for in-show jingles
-$playlistJingles = new Playlist(decorate(getRandomFiles($dirJingles, '*.mp3', 4)));
+// Create playlist for in-show jingles
+$playlists['jingles'] = new Playlist(decorate(getRandomFiles($dirJingles, '*.mp3', 1)));
 
-// 3 - Create playlist for tracks
-$playlistTracks = new Playlist(decorate(getRandomFiles($dirTracks, '*.mp3', 27)));
+// Create playlist for tracks
+$playlists['tracks'] = new Playlist(decorate(getRandomFiles($dirTracks, '*.mp3', 5)));
 
-// 4 - Intelligently merge playlists to create final show playlist
+// Mirror playlists to working directories and apply filters
+foreach ($playlists as $name => $playlist) {
+    // Mirror
+    $playlists[$name] = $playlist->mirrorTo(sprintf('%s/%s', $dirWorkingDirectory, $name));
+
+    // Trim silence
+    $filterSilence = new Silence();
+    $playlists[$name] = $filterSilence->filter($playlists[$name]);
+
+    // Make tracks characteristics similar. This is required for SoX combination
+    $filterHomogenize = new Homogenize();
+    $playlists[$name] = $filterHomogenize->filter($playlists[$name]);
+}
+
+$durationNonTracks = $playlists['startEnd']->getDuration() + $playlists['jingles']->getDuration();
+$durationLeftForTracks = $maxDuration - $durationNonTracks;
+var_dump(sprintf('maximum duration : %s', $maxDuration));
+var_dump(sprintf('non tracks duration : %s', $durationNonTracks));
+var_dump(sprintf('duration left for tracks : %s', $durationLeftForTracks));
+var_dump(sprintf('tracks playlist original duration : %s', $playlists['tracks']->getDuration()));
+$playlists['tracks']->shrinkTo($durationLeftForTracks);
+var_dump(sprintf('tracks playlist new duration : %s', $playlists['tracks']->getDuration()));
 
 // Distribute jingles
-$playlistShow = new Playlist();
-$chunks = $playlistTracks->chunk(floor(count($playlistTracks) / count($playlistJingles)));
+$playlists['shows'] = new Playlist();
+$chunks = $playlists['tracks']->chunk(floor(count($playlists['tracks']) / count($playlists['jingles'])));
 for ($i = 0; $i < count($chunks); $i++) {
-    if ($playlistJingles->has($i)) {
-        $chunks[$i]->push($playlistJingles[$i]);
+    if ($playlists['jingles']->has($i)) {
+        $chunks[$i]->push($playlists['jingles'][$i]);
     }
-    $playlistShow = $playlistShow->merge($chunks[$i]);
+    $playlists['shows'] = $playlists['shows']->merge($chunks[$i]);
 }
 
 // Prepend opening credit
-$playlistShow->prepend($playlistStartEnd[0]);
+$playlists['shows']->prepend($playlists['startEnd'][0]);
 
 // Append closing credits
-$playlistShow->push($playlistStartEnd[1]);
+$playlists['shows']->push($playlists['startEnd'][1]);
 
-echo $playlistShow;
+// Combine tracks
+$filterCombine = new Combine(['outputFilename' => '/tmp/test.mp3']);
+$playlistFinale = $filterCombine->filter($playlists['shows']);
 
-exit;
-
-
-
-
-// sizeof($asteroids) / sizeof($planets)
+echo $playlists['shows'];
+echo $playlistFinale;

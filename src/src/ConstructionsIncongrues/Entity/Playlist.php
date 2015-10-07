@@ -3,6 +3,9 @@
 namespace ConstructionsIncongrues\Entity;
 
 use Illuminate\Support\Collection;
+use Jasny\Audio\Track;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
 
 class Playlist extends Collection
 {
@@ -10,24 +13,55 @@ class Playlist extends Collection
 
     public function getDuration()
     {
-        if ($this->duration === null) {
-            $iterator = $this->getIterator();
-            while ($iterator->valid()) {
-                $this->duration += $this[$iterator->key()]->getDuration();
-                $iterator->next();
-            }
+        $this->duration = 0;
+        foreach ($this->all() as $audioFile) {
+            $this->duration += $audioFile->getDuration();
         }
-
         return $this->duration;
+    }
+
+    public function resetStats()
+    {
+        foreach ($this->all() as $audioFile) {
+            $audioFile->resetStats();
+        }
     }
 
     public function __toString()
     {
         $playlist = [];
         foreach ($this->all() as $audioFile) {
-            $playlist[] = $audioFile->getFile()->getFilename();
+            $playlist[] = sprintf('%s (%s)', $audioFile->getFile()->getFilename(), $audioFile->getDuration());
         }
 
-        return sprintf("%s\n\n%d files\n", implode("\n", $playlist), count($playlist));
+        return sprintf(
+            "%s\n\n%d files\n%s seconds\n",
+            implode("\n", $playlist),
+            count($playlist),
+            $this->getDuration()
+        );
+    }
+
+    public function shrinkTo($limit)
+    {
+        while ($this->getDuration() > $limit) {
+            $this->pop();
+        }
+
+        return $this->getDuration();
+    }
+
+    public function mirrorTo($directory)
+    {
+        // Copy playlist files to working directory
+        $fs = new Filesystem();
+        $playlistMirror = new Playlist();
+        $this->each(function($audioFile, $i) use ($fs, $directory, $playlistMirror) {
+            $fileDestination = sprintf('%s/%s', $directory, $audioFile->getFile()->getFilename());
+            $fs->copy($audioFile->getFile()->getRealpath(), $fileDestination);
+            $playlistMirror->push(new Audiofile(new \SplFileInfo($fileDestination)));
+        });
+
+        return $playlistMirror;
     }
 }

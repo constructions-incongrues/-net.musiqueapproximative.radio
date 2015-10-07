@@ -2,10 +2,12 @@
 
 namespace ConstructionsIncongrues\Entity;
 
+use Jasny\Audio\Track;
+
 class AudioFile
 {
     private $file;
-    private $duration;
+    private $stats = [];
 
     public function __construct(\SplFileInfo $file)
     {
@@ -14,11 +16,11 @@ class AudioFile
 
     public function getDuration()
     {
-        if ($this->duration === null) {
-            $duration = 'TODO';
-            $this->duration = $duration;
+        if (!isset($this->stats['length'])) {
+            $track = new Track($this->getFile()->getRealpath());
+            $this->stats = get_object_vars($track->getStats());
         }
-        return $this->duration;
+        return $this->stats['length'];
     }
 
     public function getFile()
@@ -26,8 +28,8 @@ class AudioFile
         return $this->file;
     }
 
-    private function calculateDuration()
+    public function resetStats()
     {
-        // @see https://github.com/jasny/audio
+        $this->stats = null;
     }
 }
