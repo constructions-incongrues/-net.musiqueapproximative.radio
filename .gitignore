@@ -1,2 +1,4 @@
 /src/fixtures/*/real/*.mp3
 /vendor
+/parameters.yml
+/src/parameters.yml

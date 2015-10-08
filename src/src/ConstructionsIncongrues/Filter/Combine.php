@@ -29,6 +29,7 @@ class Combine
             );
         });
 
+        $fs->remove($this->parameters['outputFilename']);
         $command = sprintf(
             'sox -V1 $(ls %s/*.mp3) %s',
             $this->parameters['workingDirectory'],

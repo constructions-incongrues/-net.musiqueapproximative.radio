@@ -1,0 +1,12 @@
+directories:
+    ending: @radio.directories.ending@
+    jingles: @radio.directories.jingles@
+    opening: @radio.directories.opening@
+    tracks: @radio.directories.tracks@
+    virgules: @radio.directories.virgules@
+    working_directories: @radio.directories.working_directories@
+
+show:
+    tracks: @radio.show.tracks@
+    jingles: @radio.show.jingles@
+    duration: @radio.show.duration@

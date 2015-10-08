@@ -13,6 +13,7 @@
         "jasny/audio": "^0.1",
         "symfony/filesystem": "^2.7",
         "symfony/process": "^2.7",
+        "symfony/yaml": "^2.7",
         "constructions-incongrues/ananas-build-toolkit": "0.30"
     },
     "config": {

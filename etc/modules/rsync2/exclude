@@ -1,0 +1,14 @@
+*-dist
+*.sw*
+*.bak
+*.orig
+*~
+.git
+/composer.*
+/etc
+/vendor/constructions-incongrues/ananas-build-toolkit
+/src/fixtures/*/dummy
+/src/fixtures/tracks
+/src/fixtures/working_directories
+/src/fixtures/filters
+/src/spec

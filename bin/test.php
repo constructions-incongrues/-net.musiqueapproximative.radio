@@ -5,12 +5,12 @@ require_once(__DIR__.'/../vendor/autoload.php');
 // Use
 use ConstructionsIncongrues\Entity\AudioFile;
 use ConstructionsIncongrues\Entity\Playlist;
-use ConstructionsIncongrues\Filter\Silence;
-use ConstructionsIncongrues\Filter\Homogenize;
 use ConstructionsIncongrues\Filter\Combine;
+use ConstructionsIncongrues\Filter\Homogenize;
+use ConstructionsIncongrues\Filter\Silence;
 use Illuminate\Support\Collection;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Yaml\Parser;
 
 // Helpers
 
@@ -50,28 +50,24 @@ function decorate(Collection $filesPaths)
 $fs = new Filesystem();
 
 // Configuration
-$dirFixtures = __DIR__.'/../src/fixtures';
-$dirEnding = sprintf('%s/%s', $dirFixtures, 'ending/real');
-$dirJingles = sprintf('%s/%s', $dirFixtures, 'jingles/real');
-$dirOpening = sprintf('%s/%s', $dirFixtures, 'opening/real');
-$dirTracks = sprintf('%s/%s', $dirFixtures, 'tracks/real');
-$dirVirgules = sprintf('%s/%s', $dirFixtures, 'virgules/dummy');
-$dirWorkingDirectories = sprintf('%s/%s', $dirFixtures, 'working_directories');
-$dirWorkingDirectory = sprintf('%s/%s', $dirWorkingDirectories, uniqid());
+$yaml = new Parser();
+$configuration = $yaml->parse(file_get_contents(__DIR__.'/../src/parameters.yml'));
+$dirWorkingDirectory = sprintf('%s/%s', __DIR__.'/'.$configuration['directories']['working_directories'], uniqid());
 var_dump($dirWorkingDirectory);
-$maxDuration = 600;
+$maxDuration = $configuration['show']['duration'];
 $playlists = [];
 
 // Create playlist for starting and ending files
-$playlists['startEnd'] = new Playlist(
-    [decorate(getRandomFiles($dirOpening, '*.mp3', 1))[0], decorate(getRandomFiles($dirEnding, '*.mp3', 1))[0]]
-);
+$playlists['startEnd'] = new Playlist([
+    decorate(getRandomFiles(__DIR__.'/'.$configuration['directories']['opening'], '*.mp3', 1))[0],
+    decorate(getRandomFiles(__DIR__.'/'.$configuration['directories']['ending'], '*.mp3', 1))[0]
+]);
 
 // Create playlist for in-show jingles
-$playlists['jingles'] = new Playlist(decorate(getRandomFiles($dirJingles, '*.mp3', 1)));
+$playlists['jingles'] = new Playlist(decorate(getRandomFiles(__DIR__.'/'.$configuration['directories']['jingles'], '*.mp3', $configuration['show']['jingles'])));
 
 // Create playlist for tracks
-$playlists['tracks'] = new Playlist(decorate(getRandomFiles($dirTracks, '*.mp3', 5)));
+$playlists['tracks'] = new Playlist(decorate(getRandomFiles(__DIR__.'/'.$configuration['directories']['tracks'], '*.mp3', $configuration['show']['tracks'])));
 
 // Mirror playlists to working directories and apply filters
 foreach ($playlists as $name => $playlist) {
