@@ -35,7 +35,7 @@ class Silence
         }
 
         // Durations may have changed
-        $playlist->resetStats();
+        $playlist->reset();
 
         return $playlist;
     }

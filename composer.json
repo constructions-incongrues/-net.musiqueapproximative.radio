@@ -9,12 +9,14 @@
         "phpspec/phpspec": "~2.0"
     },
     "require": {
+        "constructions-incongrues/ananas-build-toolkit": "0.30",
         "illuminate/support": "^5",
         "jasny/audio": "^0.1",
         "symfony/filesystem": "^2.7",
         "symfony/process": "^2.7",
         "symfony/yaml": "^2.7",
-        "constructions-incongrues/ananas-build-toolkit": "0.30"
+        "uri-template/uri-template": "~1.0",
+        "guzzlehttp/guzzle": "~6.0"
     },
     "config": {
         "bin-dir": "bin"

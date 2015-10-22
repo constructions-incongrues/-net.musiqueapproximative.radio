@@ -34,7 +34,7 @@ class Homogenize
         }
 
         // Stats may have changed
-        $playlist->resetStats();
+        $playlist->reset();
 
         return $playlist;
     }

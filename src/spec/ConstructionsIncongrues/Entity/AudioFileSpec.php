@@ -30,4 +30,24 @@ class AudioFileSpec extends ObjectBehavior
     function stats_can_be_reset()
     {
     }
+
+    function it_can_return_file_md5sum()
+    {
+        $this->getMd5()->shouldBeString();
+    }
+
+    function it_can_return_title()
+    {
+        $this->getTitle()->shouldBeString();
+    }
+
+    function it_can_return_artist()
+    {
+        $this->getArtist()->shouldBeString();
+    }
+
+    function it_can_return_description()
+    {
+        $this->getDescription()->shouldBeString();
+    }
 }

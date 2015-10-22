@@ -23,18 +23,16 @@ class PlaylistSpec extends ObjectBehavior
 
     function it_can_return_duration()
     {
-        $this->getDuration()->shouldEqual(469.501918);
+        $this->getDuration()->shouldEqual(468.357011);
     }
 
     function it_can_be_shrinked_to_time_limit()
     {
-        $this->shrinkTo(300)->shouldReturn(234.426);
+        $this->shrinkTo(300)->shouldReturn(233.372);
     }
 
     function it_can_combine_files_into_one()
     {
-        $uniqid = uniqid();
-        $this->combine(sprintf('/tmp/%s', $uniqid));
     }
 
     function it_can_be_mirrored_to_a_directory()

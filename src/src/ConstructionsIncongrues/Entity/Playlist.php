@@ -20,10 +20,10 @@ class Playlist extends Collection
         return $this->duration;
     }
 
-    public function resetStats()
+    public function reset()
     {
         foreach ($this->all() as $audioFile) {
-            $audioFile->resetStats();
+            $audioFile->reset();
         }
     }
 
@@ -31,7 +31,7 @@ class Playlist extends Collection
     {
         $playlist = [];
         foreach ($this->all() as $audioFile) {
-            $playlist[] = sprintf('%s (%s)', $audioFile->getFile()->getFilename(), $audioFile->getDuration());
+            $playlist[] = sprintf('%s - %s (%s)', $audioFile->getArtist(), $audioFile->getTitle(), $audioFile->getDuration());
         }
 
         return sprintf(
@@ -55,13 +55,12 @@ class Playlist extends Collection
     {
         // Copy playlist files to working directory
         $fs = new Filesystem();
-        $playlistMirror = new Playlist();
-        $this->each(function($audioFile, $i) use ($fs, $directory, $playlistMirror) {
+        $this->each(function($audioFile, $i) use ($fs, $directory) {
             $fileDestination = sprintf('%s/%s', $directory, $audioFile->getFile()->getFilename());
             $fs->copy($audioFile->getFile()->getRealpath(), $fileDestination);
-            $playlistMirror->push(new Audiofile(new \SplFileInfo($fileDestination)));
+            $audioFile->setFile(new \SplFileInfo($fileDestination));
         });
 
-        return $playlistMirror;
+        return $this;
     }
 }

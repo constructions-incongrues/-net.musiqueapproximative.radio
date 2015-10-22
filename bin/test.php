@@ -7,6 +7,7 @@ use ConstructionsIncongrues\Entity\AudioFile;
 use ConstructionsIncongrues\Entity\Playlist;
 use ConstructionsIncongrues\Filter\Combine;
 use ConstructionsIncongrues\Filter\Homogenize;
+use ConstructionsIncongrues\Filter\GetTracksInformations;
 use ConstructionsIncongrues\Filter\Silence;
 use Illuminate\Support\Collection;
 use Symfony\Component\Filesystem\Filesystem;
@@ -68,6 +69,10 @@ $playlists['jingles'] = new Playlist(decorate(getRandomFiles(__DIR__.'/'.$config
 
 // Create playlist for tracks
 $playlists['tracks'] = new Playlist(decorate(getRandomFiles(__DIR__.'/'.$configuration['directories']['tracks'], '*.mp3', $configuration['show']['tracks'])));
+
+// Get tracks informations
+$filterGetInformations = new GetTracksInformations();
+$playlists['tracks'] = $filterGetInformations->filter($playlists['tracks']);
 
 // Mirror playlists to working directories and apply filters
 foreach ($playlists as $name => $playlist) {
