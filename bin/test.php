@@ -6,9 +6,10 @@ require_once(__DIR__.'/../vendor/autoload.php');
 use ConstructionsIncongrues\Entity\AudioFile;
 use ConstructionsIncongrues\Entity\Playlist;
 use ConstructionsIncongrues\Filter\Combine;
-use ConstructionsIncongrues\Filter\Homogenize;
 use ConstructionsIncongrues\Filter\GetTracksInformations;
+use ConstructionsIncongrues\Filter\Homogenize;
 use ConstructionsIncongrues\Filter\Silence;
+use ConstructionsIncongrues\PlaylistRenderer\Text;
 use Illuminate\Support\Collection;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
@@ -117,5 +118,6 @@ $playlists['shows']->push($playlists['startEnd'][1]);
 $filterCombine = new Combine(['outputFilename' => '/tmp/test.mp3']);
 $playlistFinale = $filterCombine->filter($playlists['shows']);
 
-echo $playlists['shows'];
-echo $playlistFinale;
+// Display playlist
+$renderer = new Text();
+echo $renderer->render($playlists['shows']);

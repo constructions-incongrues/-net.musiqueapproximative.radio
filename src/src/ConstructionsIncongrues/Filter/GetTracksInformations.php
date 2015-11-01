@@ -1,8 +1,8 @@
 <?php
 namespace ConstructionsIncongrues\Filter;
 
-use ConstructionsIncongrues\Entity\Playlist;
 use ConstructionsIncongrues\Entity\AudioFile;
+use ConstructionsIncongrues\Entity\Playlist;
 use GuzzleHttp\Client;
 use UriTemplate\Processor;
 
@@ -21,7 +21,7 @@ class GetTracksInformations
     public function filter(Playlist $playlist)
     {
         $client = new Client();
-        $playlist->each(function(AudioFile $audioFile, $i) use ($client) {
+        $playlist->each(function (AudioFile $audioFile) use ($client) {
             $url = new Processor($this->parameters['uriTemplate'], ['uid' => $audioFile->getMd5()]);
             $response = $client->request('GET', $url->process(), ['headers' => ['Accept' => 'application/json']]);
             $response = json_decode($response->getBody()->getContents(), true);
