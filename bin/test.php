@@ -71,13 +71,14 @@ $playlists['jingles'] = new Playlist(decorate(getRandomFiles(__DIR__.'/'.$config
 // Create playlist for tracks
 $playlists['tracks'] = new Playlist(decorate(getRandomFiles(__DIR__.'/'.$configuration['directories']['tracks'], '*.mp3', $configuration['show']['tracks'])));
 
-// Get tracks informations
-$filterGetInformations = new GetTracksInformations();
-$playlists['tracks'] = $filterGetInformations->filter($playlists['tracks']);
-
 // Mirror playlists to working directories and apply filters
 foreach ($playlists as $name => $playlist) {
+    // Get file informations
+    $filterGetInformations = new GetTracksInformations();
+    $playlists[$name] = $filterGetInformations->filter($playlists[$name]);
+
     // Mirror
+    /** @var Playlist $playlist */
     $playlists[$name] = $playlist->mirrorTo(sprintf('%s/%s', $dirWorkingDirectory, $name));
 
     // Trim silence

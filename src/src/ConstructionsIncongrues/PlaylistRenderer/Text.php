@@ -21,7 +21,6 @@ class Text implements PlaylistRendererInterface
             $timestamp = 0;
             /** @var Audiofile $audioFile */
             foreach ($playlist->all() as $audioFile) {
-                // TODO : Use Symfony\ExpressionLanguage to provide templating capabilities
                 $list[] = sprintf(
                     '[%s] %s - %s',
                     $this->timestampToTimecode($timestamp),
