@@ -6,9 +6,10 @@ require_once(__DIR__.'/../vendor/autoload.php');
 use ConstructionsIncongrues\Entity\AudioFile;
 use ConstructionsIncongrues\Entity\Playlist;
 use ConstructionsIncongrues\Filter\Combine;
-use ConstructionsIncongrues\Filter\Homogenize;
 use ConstructionsIncongrues\Filter\GetTracksInformations;
+use ConstructionsIncongrues\Filter\Homogenize;
 use ConstructionsIncongrues\Filter\Silence;
+use ConstructionsIncongrues\PlaylistRenderer\Text;
 use Illuminate\Support\Collection;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
@@ -70,13 +71,14 @@ $playlists['jingles'] = new Playlist(decorate(getRandomFiles(__DIR__.'/'.$config
 // Create playlist for tracks
 $playlists['tracks'] = new Playlist(decorate(getRandomFiles(__DIR__.'/'.$configuration['directories']['tracks'], '*.mp3', $configuration['show']['tracks'])));
 
-// Get tracks informations
-$filterGetInformations = new GetTracksInformations();
-$playlists['tracks'] = $filterGetInformations->filter($playlists['tracks']);
-
 // Mirror playlists to working directories and apply filters
 foreach ($playlists as $name => $playlist) {
+    // Get file informations
+    $filterGetInformations = new GetTracksInformations();
+    $playlists[$name] = $filterGetInformations->filter($playlists[$name]);
+
     // Mirror
+    /** @var Playlist $playlist */
     $playlists[$name] = $playlist->mirrorTo(sprintf('%s/%s', $dirWorkingDirectory, $name));
 
     // Trim silence
@@ -117,5 +119,6 @@ $playlists['shows']->push($playlists['startEnd'][1]);
 $filterCombine = new Combine(['outputFilename' => '/tmp/test.mp3']);
 $playlistFinale = $filterCombine->filter($playlists['shows']);
 
-echo $playlists['shows'];
-echo $playlistFinale;
+// Display playlist
+$renderer = new Text();
+echo $renderer->render($playlists['shows']);

@@ -1,9 +1,10 @@
 <?php
 namespace ConstructionsIncongrues\Filter;
 
-use ConstructionsIncongrues\Entity\Playlist;
 use ConstructionsIncongrues\Entity\AudioFile;
+use ConstructionsIncongrues\Entity\Playlist;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use UriTemplate\Processor;
 
 class GetTracksInformations
@@ -21,20 +22,34 @@ class GetTracksInformations
     public function filter(Playlist $playlist)
     {
         $client = new Client();
-        $playlist->each(function(AudioFile $audioFile, $i) use ($client) {
-            $url = new Processor($this->parameters['uriTemplate'], ['uid' => $audioFile->getMd5()]);
-            $response = $client->request('GET', $url->process(), ['headers' => ['Accept' => 'application/json']]);
-            $response = json_decode($response->getBody()->getContents(), true);
-            if ($response && isset($response['track'])) {
-                $audioFile->setArtist($response['track']['author']);
-                $audioFile->setDescription($response['body']['markdown']);
-                $audioFile->setTitle($response['track']['title']);
-            } else {
-                $audioFile->setArtist('Unknown Artist');
-                $audioFile->setTitle($audioFile->getFile()->getFilename());
+        $playlist->each(function (AudioFile $audioFile) use ($client) {
+
+            try {
+                $url = new Processor($this->parameters['uriTemplate'], ['uid' => $audioFile->getMd5()]);
+                $response = $client->request('GET', $url->process(), ['headers' => ['Accept' => 'application/json']]);
+                $response = json_decode($response->getBody()->getContents(), true);
+                if ($response && isset($response['track'])) {
+                    $audioFile->setArtist($response['track']['author']);
+                    $audioFile->setDescription($response['body']['markdown']);
+                    $audioFile->setTitle($response['track']['title']);
+                } else {
+                    $this->guessPropertiesFromFilename($audioFile);
+                }
+            } catch (GuzzleException $e) {
+                $this->guessPropertiesFromFilename($audioFile);
             }
         });
 
         return $playlist;
+    }
+
+    /**
+     * @param AudioFile $audioFile
+     */
+    private function guessPropertiesFromFilename(AudioFile $audioFile)
+    {
+        $parts = explode(' - ', $audioFile->getFile()->getBasename('.mp3'));
+        $audioFile->setArtist(array_shift($parts));
+        $audioFile->setTitle(implode(' - ', $parts));
     }
 }
