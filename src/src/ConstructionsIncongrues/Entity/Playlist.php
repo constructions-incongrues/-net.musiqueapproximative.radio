@@ -3,7 +3,6 @@
 namespace ConstructionsIncongrues\Entity;
 
 use Illuminate\Support\Collection;
-use Jasny\Audio\Track;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
@@ -11,17 +10,9 @@ class Playlist extends Collection
 {
     private $duration;
 
-    public function getDuration()
-    {
-        $this->duration = 0;
-        foreach ($this->all() as $audioFile) {
-            $this->duration += $audioFile->getDuration();
-        }
-        return $this->duration;
-    }
-
     public function reset()
     {
+        /** @var AudioFile $audioFile */
         foreach ($this->all() as $audioFile) {
             $audioFile->reset();
         }
@@ -30,6 +21,7 @@ class Playlist extends Collection
     public function __toString()
     {
         $playlist = [];
+        /** @var AudioFile $audioFile */
         foreach ($this->all() as $audioFile) {
             $playlist[] = sprintf('%s - %s (%s)', $audioFile->getArtist(), $audioFile->getTitle(), $audioFile->getDuration());
         }
@@ -40,6 +32,16 @@ class Playlist extends Collection
             count($playlist),
             $this->getDuration()
         );
+    }
+
+    public function getDuration()
+    {
+        $this->duration = 0;
+        /** @var AudioFile $audioFile */
+        foreach ($this->all() as $audioFile) {
+            $this->duration += $audioFile->getDuration();
+        }
+        return $this->duration;
     }
 
     public function shrinkTo($limit)
@@ -55,7 +57,7 @@ class Playlist extends Collection
     {
         // Copy playlist files to working directory
         $fs = new Filesystem();
-        $this->each(function($audioFile, $i) use ($fs, $directory) {
+        $this->each(function ($audioFile) use ($fs, $directory) {
             $fileDestination = sprintf('%s/%s', $directory, $audioFile->getFile()->getFilename());
             $fs->copy($audioFile->getFile()->getRealpath(), $fileDestination);
             $audioFile->setFile(new \SplFileInfo($fileDestination));

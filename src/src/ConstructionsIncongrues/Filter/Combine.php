@@ -2,8 +2,8 @@
 
 namespace ConstructionsIncongrues\Filter;
 
-use ConstructionsIncongrues\Entity\Playlist;
 use ConstructionsIncongrues\Entity\AudioFile;
+use ConstructionsIncongrues\Entity\Playlist;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
@@ -31,7 +31,7 @@ class Combine
 
         $fs->remove($this->parameters['outputFilename']);
         $command = sprintf(
-            'sox -V1 $(ls %s/*.mp3) %s',
+            'sox -V1 $(ls -v %s/*.mp3) %s',
             $this->parameters['workingDirectory'],
             $this->parameters['outputFilename']
         );
