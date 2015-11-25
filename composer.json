@@ -16,7 +16,9 @@
         "symfony/process": "^2.7",
         "symfony/yaml": "^2.7",
         "uri-template/uri-template": "~1.0",
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "~6.0",
+        "monolog/monolog": "1.17.2",
+        "symfony/console": "v2.7.6"
     },
     "config": {
         "bin-dir": "bin"
