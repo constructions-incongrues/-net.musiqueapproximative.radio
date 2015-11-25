@@ -6,10 +6,16 @@ use ConstructionsIncongrues\Entity\Playlist;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
-class Homogenize
+class Homogenize extends AbstractFilter
 {
+    protected $name = 'homogenize';
+
     public function filter(Playlist $playlist)
     {
+        // Copy tracks to dedicated working directory
+        $playlist->mirrorTo($this->getParameters()['workingDirectory']);
+
+        /** @var $audioFile AudioFile */
         foreach ($playlist->all() as $audioFile) {
             $fileTmp = sprintf('%s/homogenize_%s.mp3', $audioFile->getFile()->getPath(), uniqid());
             $fileOriginal = $audioFile->getFile()->getRealpath();

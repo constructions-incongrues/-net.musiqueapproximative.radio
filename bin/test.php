@@ -8,6 +8,7 @@ use ConstructionsIncongrues\Entity\Playlist;
 use ConstructionsIncongrues\Filter\Combine;
 use ConstructionsIncongrues\Filter\GetTracksInformations;
 use ConstructionsIncongrues\Filter\Homogenize;
+use ConstructionsIncongrues\Filter\Normalize;
 use ConstructionsIncongrues\Filter\Silence;
 use ConstructionsIncongrues\PlaylistRenderer\Text;
 use Illuminate\Support\Collection;
@@ -74,7 +75,7 @@ $playlists['tracks'] = new Playlist(decorate(getRandomFiles(__DIR__.'/'.$configu
 // Mirror playlists to working directories and apply filters
 foreach ($playlists as $name => $playlist) {
     // Get file informations
-    $filterGetInformations = new GetTracksInformations();
+    $filterGetInformations = new GetTracksInformations(['workingDirectory' => $dirWorkingDirectory]);
     $playlists[$name] = $filterGetInformations->filter($playlists[$name]);
 
     // Mirror
@@ -82,11 +83,11 @@ foreach ($playlists as $name => $playlist) {
     $playlists[$name] = $playlist->mirrorTo(sprintf('%s/%s', $dirWorkingDirectory, $name));
 
     // Trim silence
-    $filterSilence = new Silence();
+    $filterSilence = new Silence(['workingDirectory' => $dirWorkingDirectory]);
     $playlists[$name] = $filterSilence->filter($playlists[$name]);
 
     // Make tracks characteristics similar. This is required for SoX combination
-    $filterHomogenize = new Homogenize();
+    $filterHomogenize = new Homogenize(['workingDirectory' => $dirWorkingDirectory]);
     $playlists[$name] = $filterHomogenize->filter($playlists[$name]);
 }
 
@@ -115,8 +116,12 @@ $playlists['shows']->prepend($playlists['startEnd'][0]);
 // Append closing credits
 $playlists['shows']->push($playlists['startEnd'][1]);
 
+// Normalize tracks
+$filterNormalize = new Normalize(['workingDirectory' => $dirWorkingDirectory]);
+$playlist['shows'] = $filterNormalize->filter($playlists['shows']);
+
 // Combine tracks
-$filterCombine = new Combine(['outputFilename' => '/tmp/test.mp3']);
+$filterCombine = new Combine(['workingDirectory' => $dirWorkingDirectory, 'outputFilename' => '/tmp/test.mp3']);
 $playlistFinale = $filterCombine->filter($playlists['shows']);
 
 // Display playlist

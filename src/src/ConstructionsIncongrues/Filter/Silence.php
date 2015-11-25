@@ -6,10 +6,13 @@ use ConstructionsIncongrues\Entity\Playlist;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
-class Silence
+class Silence extends AbstractFilter
 {
+    protected $name = 'silence';
+
     public function filter(Playlist $playlist)
     {
+        /** @var AudioFile $audioFile */
         foreach ($playlist->all() as $audioFile) {
             $fileTmp = sprintf('%s/silence_%s.mp3', $audioFile->getFile()->getPath(), uniqid());
             $fileOriginal = $audioFile->getFile()->getRealpath();
@@ -30,8 +33,7 @@ class Silence
             // // Move temp file to original name
             $fs = new Filesystem();
             $fs->remove($fileOriginal);
-            //$fs->rename($fileTmp, $fileOriginal);
-            $fs->copy($fileTmp, $fileOriginal);
+            $fs->rename($fileTmp, $fileOriginal);
         }
 
         // Durations may have changed
