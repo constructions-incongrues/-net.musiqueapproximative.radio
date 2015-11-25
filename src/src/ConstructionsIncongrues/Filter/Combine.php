@@ -35,7 +35,7 @@ class Combine extends AbstractFilter
             $strFiles[] = sprintf('"%s"', $file);
         }
         $command = sprintf(
-            'sox -V1 %s %s',
+            'sox -V1 %s -C 320 %s',
             implode(' ', $strFiles),
             $this->parameters['outputFilename']
         );
