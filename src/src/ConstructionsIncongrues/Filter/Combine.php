@@ -7,32 +7,40 @@ use ConstructionsIncongrues\Entity\Playlist;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
-class Combine
+class Combine extends AbstractFilter
 {
-    private $parameters;
+    protected $name = 'combine';
 
     public function __construct($parameters = [])
     {
-        $this->parameters = array_merge(
+        $parameters = array_merge(
             ['workingDirectory' => sys_get_temp_dir(), 'outputFilename' => 'out.mp3'],
             $parameters
         );
+
+        parent::__construct($parameters);
     }
 
     public function filter(Playlist $playlist)
     {
-        $fs = new Filesystem();
-        $playlist->each(function(AudioFile $audioFile, $i) use ($fs) {
-            $fs->copy(
-                $audioFile->getFile()->getRealpath(),
-                sprintf('%s/%s.mp3', $this->parameters['workingDirectory'], $i)
-            );
-        });
 
+        // Copy tracks to dedicated working directory
+        $playlist->mirrorTo($this->getParameters()['workingDirectory']);
+
+        // Remove any previous output file to prevent appending
+        $fs = new Filesystem();
         $fs->remove($this->parameters['outputFilename']);
+
+        //
+
+        $strFiles = [];
+        /** @var AudioFile $audioFile */
+        foreach ($playlist as $audioFile) {
+            $strFiles[] = sprintf('"%s"', $audioFile->getFile()->getPathname());
+        }
         $command = sprintf(
-            'sox -V1 $(ls -v %s/*.mp3) %s',
-            $this->parameters['workingDirectory'],
+            'sox -V1 %s -C 320 %s',
+            implode(' ', $strFiles),
             $this->parameters['outputFilename']
         );
         var_dump($command);

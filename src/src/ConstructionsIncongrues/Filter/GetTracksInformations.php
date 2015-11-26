@@ -7,16 +7,18 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use UriTemplate\Processor;
 
-class GetTracksInformations
+class GetTracksInformations extends AbstractFilter
 {
-    private $parameters = [];
+    protected $name = 'get-tracks-informations';
 
     public function __construct($parameters = [])
     {
-        $this->parameters = array_merge(
+        $parameters = array_merge(
             ['uriTemplate' => 'http://www.musiqueapproximative.net/frontend_dev.php/post/md5/{uid}'],
             $parameters
         );
+
+        parent::__construct($parameters);
     }
 
     public function filter(Playlist $playlist)
