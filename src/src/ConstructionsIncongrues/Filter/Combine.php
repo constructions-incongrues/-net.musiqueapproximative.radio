@@ -23,16 +23,20 @@ class Combine extends AbstractFilter
 
     public function filter(Playlist $playlist)
     {
-        $fs = new Filesystem();
 
         // Copy tracks to dedicated working directory
         $playlist->mirrorTo($this->getParameters()['workingDirectory']);
 
+        // Remove any previous output file to prevent appending
+        $fs = new Filesystem();
         $fs->remove($this->parameters['outputFilename']);
-        $files = glob(sprintf('%s/*.mp3', $this->getParameters()['workingDirectory']));
+
+        //
+
         $strFiles = [];
-        foreach ($files as $file) {
-            $strFiles[] = sprintf('"%s"', $file);
+        /** @var AudioFile $audioFile */
+        foreach ($playlist as $audioFile) {
+            $strFiles[] = sprintf('"%s"', $audioFile->getFile()->getPathname());
         }
         $command = sprintf(
             'sox -V1 %s -C 320 %s',
