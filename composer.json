@@ -9,7 +9,7 @@
         "phpspec/phpspec": "~2.0"
     },
     "require": {
-        "constructions-incongrues/ananas-build-toolkit": "0.30",
+        "constructions-incongrues/ananas-build-toolkit": "^0.34",
         "illuminate/support": "^5",
         "jasny/audio": "^0.1",
         "symfony/filesystem": "^2.7",

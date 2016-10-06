@@ -9,7 +9,10 @@
 /vendor/constructions-incongrues/ananas-build-toolkit
 /src/fixtures/*/dummy
 /src/fixtures/tracks
+/src/fixtures/resources
 /src/fixtures/working_directories
 /src/fixtures/filters
 /src/spec
 /.idea
+*.tar.gz
+/src/web/shows/*

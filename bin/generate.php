@@ -14,6 +14,45 @@ use ConstructionsIncongrues\PlaylistRenderer\Text;
 use Illuminate\Support\Collection;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Parser;
+use Ulrichsg\Getopt\Getopt;
+use Ulrichsg\Getopt\Option;
+
+// Helpers
+$fs = new Filesystem();
+
+// Options
+$options = getopt("c:d:n:");
+if (!isset($options['c'])) {
+    throw new \Exception('Missing option - option=c');
+}
+if (!isset($options['d'])) {
+    $options['d'] = date('YmdHis');
+}
+
+// Create channel web directory
+$dirChannel = sprintf('%s/../src/web/shows/%s', __DIR__, $options['c']);
+if (!is_dir($dirChannel)) {
+    $fs->mkdir($dirChannel);
+}
+
+if (!isset($options['n'])) {
+    $pattern = '/musiqueapproximative_.+_(\d+)_.*\.mp3/';
+    $files = glob($dirChannel.'/*.mp3');
+    $highestNumber = 0;
+    foreach ($files as $file) {
+        $matches = [];
+        if (preg_match($pattern, basename($file), $matches)) {
+            if ((int)$matches[1] > $highestNumber) {
+                $highestNumber = $matches[1];
+            }
+        }
+        $options['n'] = $highestNumber + 1;
+    }
+}
+
+// Base filename for show files
+$outputFilename = sprintf('musiqueapproximative_%s_%d_%s', $options['c'], $options['n'], $options['d']);
+var_dump($outputFilename);
 
 // Helpers
 
@@ -50,7 +89,6 @@ function decorate(Collection $filesPaths)
     return $audioFiles;
 }
 
-$fs = new Filesystem();
 
 // Configuration
 $yaml = new Parser();
@@ -121,9 +159,21 @@ $filterNormalize = new Normalize(['workingDirectory' => $dirWorkingDirectory]);
 $playlist['shows'] = $filterNormalize->filter($playlists['shows']);
 
 // Combine tracks
-$filterCombine = new Combine(['workingDirectory' => $dirWorkingDirectory, 'outputFilename' => '/tmp/test.mp3']);
+$filterCombine = new Combine(
+    ['workingDirectory' => $dirWorkingDirectory,
+    'outputFilename' => sprintf('%s/%s.mp3', $dirChannel, $outputFilename)]
+);
 $playlistFinale = $filterCombine->filter($playlists['shows']);
 
-// Display playlist
+// Store playlist
 $renderer = new Text();
+file_put_contents(
+    sprintf('%s/%s.txt', $dirChannel, $outputFilename),
+    $renderer->render($playlists['shows'])
+);
+
+// Display playlist
 echo $renderer->render($playlists['shows']);
+
+// Cleanup
+$fs->remove($dirWorkingDirectory);
