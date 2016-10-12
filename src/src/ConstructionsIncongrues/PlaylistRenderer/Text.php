@@ -16,6 +16,31 @@ class Text implements PlaylistRendererInterface
      */
     public function render(Playlist $playlist, array $options = [])
     {
+        // Layout
+        $layout = <<<EOT
+# Radio Approximative #%d sur %s (%s)
+
+## Playlist
+
+%%s
+
+## Liens
+
+- [Télécharger l'émission](http://radio.musiqueapproximative.net/shows/%s/%s.mp3)
+- [Télécharger la playlist](http://radio.musiqueapproximative.net/shows/%s/%s.txt)
+
+EOT;
+        $template = sprintf(
+            $layout,
+            $options['number'],
+            ucfirst($options['channel']),
+            $options['date'],
+            $options['channel'],
+            $options['filename'],
+            $options['channel'],
+            $options['filename']
+        );
+
         $list = [];
         if ($playlist->count()) {
             $timestamp = 0;
@@ -31,7 +56,7 @@ class Text implements PlaylistRendererInterface
             }
         }
 
-        return implode("\n", $list);
+        return sprintf($template, implode("\n", $list));
     }
 
     /**

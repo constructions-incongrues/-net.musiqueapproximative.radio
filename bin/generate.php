@@ -169,11 +169,23 @@ $playlistFinale = $filterCombine->filter($playlists['shows']);
 $renderer = new Text();
 file_put_contents(
     sprintf('%s/%s.txt', $dirChannel, $outputFilename),
-    $renderer->render($playlists['shows'])
+    $renderer->render($playlists['shows'], [
+        'channel'  => $options['c'], 
+        'date'     => $options['d'], 
+        'number'   => $options['n'], 
+        'filename' => $outputFilename
+    ])
 );
 
 // Display playlist
-echo $renderer->render($playlists['shows']);
+echo $renderer->render(
+    $playlists['shows'], [
+        'channel'  => $options['c'], 
+        'date'     => $options['d'], 
+        'number'   => $options['n'], 
+        'filename' => $outputFilename
+    ]
+);
 
 // Display show URL
 echo sprintf(
