@@ -52,7 +52,7 @@ if (!isset($options['n'])) {
 
 // Base filename for show files
 $outputFilename = sprintf('musiqueapproximative_%s_%d_%s', $options['c'], $options['n'], $options['d']);
-var_dump($outputFilename);
+// var_dump($outputFilename);
 
 // Helpers
 
@@ -94,7 +94,7 @@ function decorate(Collection $filesPaths)
 $yaml = new Parser();
 $configuration = $yaml->parse(file_get_contents(__DIR__.'/../src/parameters.yml'));
 $dirWorkingDirectory = sprintf('%s/%s', __DIR__.'/'.$configuration['directories']['working_directories'], uniqid());
-var_dump($dirWorkingDirectory);
+// var_dump($dirWorkingDirectory);
 $maxDuration = $configuration['show']['duration'];
 $playlists = [];
 
@@ -131,12 +131,12 @@ foreach ($playlists as $name => $playlist) {
 
 $durationNonTracks = $playlists['startEnd']->getDuration() + $playlists['jingles']->getDuration();
 $durationLeftForTracks = $maxDuration - $durationNonTracks;
-var_dump(sprintf('maximum duration : %s', $maxDuration));
-var_dump(sprintf('non tracks duration : %s', $durationNonTracks));
-var_dump(sprintf('duration left for tracks : %s', $durationLeftForTracks));
-var_dump(sprintf('tracks playlist original duration : %s', $playlists['tracks']->getDuration()));
+// var_dump(sprintf('maximum duration : %s', $maxDuration));
+// var_dump(sprintf('non tracks duration : %s', $durationNonTracks));
+// var_dump(sprintf('duration left for tracks : %s', $durationLeftForTracks));
+// var_dump(sprintf('tracks playlist original duration : %s', $playlists['tracks']->getDuration()));
 $playlists['tracks']->shrinkTo($durationLeftForTracks);
-var_dump(sprintf('tracks playlist new duration : %s', $playlists['tracks']->getDuration()));
+// var_dump(sprintf('tracks playlist new duration : %s', $playlists['tracks']->getDuration()));
 
 // Distribute jingles
 $playlists['shows'] = new Playlist();
@@ -174,6 +174,18 @@ file_put_contents(
 
 // Display playlist
 echo $renderer->render($playlists['shows']);
+
+// Display show URL
+echo sprintf(
+    "Show is available at : http://radio.musiqueapproximative.net/shows/%s/%s.mp3\n",
+    $options['c'],
+    $outputFilename
+);
+echo sprintf(
+    "Show playlist is available at : http://radio.musiqueapproximative.net/shows/%s/%s.txt\n",
+    $options['c'],
+    $outputFilename
+);
 
 // Cleanup
 $fs->remove($dirWorkingDirectory);

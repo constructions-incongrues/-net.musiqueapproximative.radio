@@ -43,7 +43,6 @@ class Combine extends AbstractFilter
             implode(' ', $strFiles),
             $this->parameters['outputFilename']
         );
-        var_dump($command);
         $process = new Process($command);
         $process->setTimeout(600);
         $process->run();

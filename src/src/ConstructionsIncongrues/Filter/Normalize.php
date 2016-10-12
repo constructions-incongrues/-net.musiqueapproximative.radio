@@ -29,7 +29,6 @@ class Normalize extends AbstractFilter
         // -o        output is a database-friendly tab-delimited list
         // -s r      force re-calculation (do not read tag info)
         $command = sprintf('mp3gain -r -k -o -s r %s/*.mp3', $this->getParameters()['workingDirectory']);
-        var_dump($command);
         $process = new Process($command);
         $process->setTimeout(600);
         $process->run();
