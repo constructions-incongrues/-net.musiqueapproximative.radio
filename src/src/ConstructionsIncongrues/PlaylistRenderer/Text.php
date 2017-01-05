@@ -26,8 +26,8 @@ class Text implements PlaylistRendererInterface
 
 ## Liens
 
-- [Télécharger l'émission](http://radio.musiqueapproximative.net/shows/%s/%s.mp3)
-- [Télécharger la playlist](http://radio.musiqueapproximative.net/shows/%s/%s.txt)
+- [Télécharger l'émission](http://radio.musiqueapproximative.net/collection/channels/%s/%s.mp3)
+- [Télécharger la playlist](http://radio.musiqueapproximative.net/collection/channels/%s/%s.txt)
 
 EOT;
         $template = sprintf(
