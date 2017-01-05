@@ -1,0 +1,32 @@
+{% extends "base.twig" %}
+
+{% block submenu %}
+<h2><a href="{{ path('homepage') }}">Chaînes</a> > {{ channel }}</h2>
+<hr />
+<h3 class="alt"><a href="{{ path('channel', {channel:channel}) }}">Émissions</a> > #{{ show.number }}</h3>
+<hr />
+{% endblock %}
+
+{% block title %}{{ channel }} #{{ show.number }} | {% endblock %}
+
+{% block ogp %}
+    <meta property="og:title" content="{{ channel }} #{{ show.number }} | Radio Approximative" />
+    <meta property="og:description" content="Radio Approximative pour {{ channel }} - Émission #{{ show.number }}" />
+{% endblock %}
+
+{% block about %} <a href="{{ path('about') }}" title="À propos">[?]</a> <a href="{{ path('homepage') }}" title="Retourner à la page d'accueil">[&lt;]</a>{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="fixed">
+        <audio controls>
+            <source src="/collections/channels/{{ channel }}/{{ show.title }}.mp3">
+        </audio>
+    </div>
+
+    <div class="flex-item manifest">
+{{ manifest|raw }}
+    </div>
+</div>
+{% endblock %}

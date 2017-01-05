@@ -1,0 +1,18 @@
+{% extends "base.twig" %}
+
+{% block submenu %}
+<h2>Chaînes</h2>
+<hr />
+{% endblock %}
+
+{% block content %}
+
+<ul class="channels">
+{% for channel in channels %}
+    <li>
+        <a href="{{ path('channel', { channel: channel.basename }) }}">{{ channel.basename }}</a>
+        <hr />
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}

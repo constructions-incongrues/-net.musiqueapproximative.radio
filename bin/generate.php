@@ -30,7 +30,7 @@ if (!isset($options['d'])) {
 }
 
 // Create channel web directory
-$dirChannel = sprintf('%s/../src/web/shows/%s', __DIR__, $options['c']);
+$dirChannel = sprintf('%s/../src/web/collections/channels/%s', __DIR__, $options['c']);
 if (!is_dir($dirChannel)) {
     $fs->mkdir($dirChannel);
 }
@@ -51,8 +51,7 @@ if (!isset($options['n'])) {
 }
 
 // Base filename for show files
-$outputFilename = sprintf('musiqueapproximative_%s_%d_%s', $options['c'], $options['n'], $options['d']);
-// var_dump($outputFilename);
+$outputFilename = sprintf('musiqueapproximative_%s_%03d_%s', $options['c'], $options['n'], $options['d']);
 
 // Helpers
 
@@ -170,31 +169,29 @@ $renderer = new Text();
 file_put_contents(
     sprintf('%s/%s.txt', $dirChannel, $outputFilename),
     $renderer->render($playlists['shows'], [
-        'channel'  => $options['c'], 
-        'date'     => $options['d'], 
-        'number'   => $options['n'], 
+        'channel'  => $options['c'],
+        'date'     => $options['d'],
+        'number'   => $options['n'],
         'filename' => $outputFilename
     ])
 );
 
 // Display playlist
-echo $renderer->render(
-    $playlists['shows'], [
-        'channel'  => $options['c'], 
-        'date'     => $options['d'], 
-        'number'   => $options['n'], 
-        'filename' => $outputFilename
-    ]
-);
+echo $renderer->render($playlists['shows'], [
+    'channel'  => $options['c'],
+    'date'     => $options['d'],
+    'number'   => $options['n'],
+    'filename' => $outputFilename
+]);
 
 // Display show URL
 echo sprintf(
-    "Show is available at : http://radio.musiqueapproximative.net/shows/%s/%s.mp3\n",
+    "Show is available at : http://radio.musiqueapproximative.net/collections/channels/%s/%s.mp3\n",
     $options['c'],
     $outputFilename
 );
 echo sprintf(
-    "Show playlist is available at : http://radio.musiqueapproximative.net/shows/%s/%s.txt\n",
+    "Show playlist is available at : http://radio.musiqueapproximative.net/collections/channels/%s/%s.txt\n",
     $options['c'],
     $outputFilename
 );

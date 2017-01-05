@@ -1,0 +1,56 @@
+<html class="no-js" lang="fr" prefix="og: http://ogp.me/ns#">
+    <head>
+        <style>
+@import url('http://fonts.googleapis.com/css?family=Arvo');
+@import url('http://fonts.googleapis.com/css?family=Rambla');
+
+h1 { margin-top: 0; margin-bottom: 0; }
+h1, h2, h3, h4 { font-family: "Arvo", serif; text-transform: uppercase;}
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+audio { background-color: #000; width: 100%; height: 70%; }
+.container { display: flex; }
+.fixed { width: 50%; }
+.flex-item { flex-grow: 1; }
+body, a:link, a:visited, a:hover, a:active { color: #000; background-color: #fff; font-family: "Rambla", serif; }
+ul { list-style-type: none; }
+ul.channels, ul.shows { font-size: 1.2em; }
+hr { border-top: 1px solid #000; }
+.alt, .alt a:link, .alt a:visited, .alt a:hover, .alt a:active { color: #fff; background-color: #000; }
+div.manifest { padding-left:2em; }
+div.manifest h1, div.manifest h2 { padding: 0; margin-top: 0; }
+div.manifest h1 { font-size: 1.5em; }
+div.manifest h2 { font-size: 1em; color: #fff; background-color: #000; }
+div.manifest ul { padding-left: 0; }
+.about { margin: auto; padding: 10px; width: 50%; font-size: 2em }
+.about a { text-decoration: underline; }
+        </style>
+
+    <title>{% block title %}{% endblock %}Radio Approximative</title>
+
+    <meta property="og:type" content="music.radio_station" />
+    <meta property="og:image" content="http://radio.musiqueapproximative.net/images/logo.png" />
+{% block ogp %}
+    <meta property="og:title" content="Radio Approximative" />
+    <meta property="og:description" content="Radio Approximative est un projet musical et informatique où chaque émission est générée aléatoirement à partir du corpus de morceaux disponibles sur le site Musique Approximative et de génériques et jingles créés par les contributeurs du site." />
+{% endblock %}
+    </head>
+
+    <body>
+        <header>
+            <h1>Radio</h1>
+            <h1 class="alt">Approximative{% block about %} <a href="{{ path('about') }}" title="À propos">[?]</a>{% endblock %}</h1>
+        </header>
+
+        <hr />
+<section class="menu">
+{% block submenu %}
+{% endblock %}
+</section>
+
+{% block content %}
+
+{% endblock %}
+
+    </body>
+</html>

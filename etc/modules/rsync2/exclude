@@ -4,7 +4,6 @@
 *.orig
 *~
 .git
-/composer.*
 /etc
 /vendor/constructions-incongrues/ananas-build-toolkit
 /src/fixtures/*/dummy
@@ -16,3 +15,6 @@
 /.idea
 *.tar.gz
 /src/web/shows/*
+/src/web/collections/*/*
+/src/web/collections/*/*
+/.vagrant

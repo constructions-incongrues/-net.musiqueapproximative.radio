@@ -47,7 +47,7 @@ EOT;
             /** @var Audiofile $audioFile */
             foreach ($playlist->all() as $audioFile) {
                 $list[] = sprintf(
-                    '[%s] %s - %s',
+                    '- [%s] %s - %s',
                     $this->timestampToTimecode($timestamp),
                     $audioFile->getArtist(),
                     $audioFile->getTitle()

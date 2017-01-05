@@ -1,0 +1,37 @@
+{% extends "base.twig" %}
+
+{% block submenu %}
+<h2>À propos</h2>
+<hr />
+{% endblock %}
+
+{% block about %} <a href="{{ path('homepage') }}" title="Retourner à la page d'accueil">[<]</a>{% endblock %}
+
+{% block title %}À propos | {% endblock %}
+
+{% block ogp %}
+    <meta property="og:title" content="À propos | Radio Approximative" />
+    <meta property="og:description" content="Radio Approximative est un projet musical et informatique où chaque émission est générée aléatoirement à partir du corpus de morceaux disponibles sur le site Musique Approximative et de génériques et jingles créés par les contributeurs du site." />
+{% endblock %}
+
+{% block content %}
+<div class="about">
+    <p><a href="http://radio.musiqueapproximative.net">Radio Approximative</a> est un projet musical et informatique où chaque émission est générée aléatoirement à partir du corpus de morceaux disponibles sur le site <a href="http://www.musiqueapproximative.net">Musique Approximative</a> et de génériques et jingles créés par les contributeurs du site.</p>
+
+    <h4 class="alt">Contribuer</h4>
+    <p>Vous pouvez nous faire parvenir des jingles de votre cru à l'adresse <a href="mailto:bertier@musiqueapproximative.net">bertier@musiqueapproximative.net</a>. Ils seront intégrés au prochaines émissions.</p>
+    <p>Vous pouvez contribuer au développement du projet en envoyant vos pull requests au dépôt <a href="https://github.com/constructions-incongrues/net.musiqueapproximative.radio">constructions-incongrues/net.musiqueapproximative.radio</a>.</p>
+
+    <h4 class="alt">Diffuser</h4>
+    <p>Les émissions hébergées sur ce site ont été générées à l'aide d'un logiciel informatique qui permet de fabriquer des émissions de toutes formes.</p>
+    <p>Si vous souhaitez en tirer parti pour alimenter votre radio, laissez nous un message à l'adresse <a href="mailto:bertier@musiqueapproximative.net">bertier@musiqueapproximative.net</a>.</p>
+
+    <h4 class="alt">Donner</h4>
+    <p>L'hébergement et la diffusion de toutes ces émissions à un coût. Vous pouvez nous aider à le supporter en nous donnant des sous. Pour en savoir plus sur nos activités et nous supporter financièrement le cas échéant : <a href="https://www.helloasso.com/associations/constructions-incongrues">https://www.helloasso.com/associations/constructions-incongrues</a></p>
+
+    <hr />
+
+    <p>Ce site est développé par <a href="http://www.constructions-incongrues.net">Constructions Incongrues</a> et hébergé par <a href="http://www.pastis-hosting.net">Pastis Hosting</a>. Le code source est diffusé sous licence <a href="https://www.gnu.org/licenses/agpl-3.0.fr.html">AGPLv3</a>.</p>
+</div>
+{% endblock %}
+

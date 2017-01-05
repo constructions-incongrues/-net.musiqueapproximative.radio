@@ -2,3 +2,5 @@
 /vendor
 /parameters.yml
 /src/parameters.yml
+*.bak
+/.vagrant

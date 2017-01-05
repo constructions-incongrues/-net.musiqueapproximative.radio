@@ -1,0 +1,29 @@
+{% extends "base.twig" %}
+
+{% block submenu %}
+<h2><a href="{{ path('homepage') }}">Chaînes</a> > {{ channel }}</h2>
+<hr />
+<h3>Émissions</h3>
+<hr />
+{% endblock %}
+
+{% block title %}{{ channel }} | {% endblock %}
+
+{% block ogp %}
+    <meta property="og:title" content="{{ channel }} | Radio Approximative" />
+    <meta property="og:description" content="Radio Approximative est un projet musical et informatique où chaque émission est générée aléatoirement à partir du corpus de morceaux disponibles sur le site Musique Approximative et de génériques et jingles créés par les contributeurs du site." />
+{% endblock %}
+
+{% block about %} <a href="{{ path('about') }}" title="À propos">[?]</a> <a href="{{ path('homepage') }}" title="Retourner à la page d'accueil">[<]</a>{% endblock %}
+
+{% block content %}
+<ul class="shows">
+{% for show in shows %}
+    <li>
+        <a href="{{ path('show', { channel: channel, show: show.title }) }}">#{{ show.number }}</a>
+        <hr />
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}
+
